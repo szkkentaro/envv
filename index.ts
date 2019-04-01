@@ -1,10 +1,10 @@
 import * as mqtt from 'mqtt'
 import * as jwt from 'jsonwebtoken'
-import * as fs from "fs"
-import yargs from "yargs";
+import * as fs from 'fs'
+import * as yargs from 'yargs'
+import * as sensor from 'node-dht-sensor'
 
 const argv = yargs
-    .env('ENVV')
     .options({
         projectId: {
             alias: 'p',
@@ -55,8 +55,18 @@ const password = jwt.sign(payload, privateKey, { algorithm: 'RS256' })
 
 // Sensor Data Reader
 const reader = () => {
-    // ToDo Impl
-    return Date.now().toString();
+    return new Promise((resolve: any, reject: any) =>{
+        // DHT22 or AM2302, GPIO 4
+        sensor.read(22, 4, (err:Error, temperature:number, humidity:number) => {
+            if (err) {
+                reject(err);
+            }
+            resolve({
+                temperature: temperature.toFixed(1),
+                humidity: humidity.toFixed(1),
+            });
+        });
+    });
 }
 
 // MQTT Client connect
@@ -99,9 +109,9 @@ client.on('start', () => {
     const topic: string = `/devices/${deviceId}/events`;
     const opts: mqtt.IClientPublishOptions = { qos: 1 };
 
-    intervalId = setInterval(() => {
-        const message: string = reader();
-        client.publish(topic, message, opts, (err, data) => {
+    intervalId = setInterval(async () => {
+        const message: any = await reader();
+        client.publish(topic, JSON.stringify(message), opts, (err, data) => {
             console.log('published data: ', data);
             if (err) {
                 console.log(err);
