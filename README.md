@@ -5,6 +5,7 @@ It is written by TypeScript.
 
 This app is Poc. You should not use this at production.
 
+
 # How to install 
 
 Execute commands below at raspberry pi
@@ -24,7 +25,7 @@ Execute commands below at raspberry pi
     git clone https://github.com/szkkentaro/envv && cd envv
 
     # Create private/public keys
-    generate_keys.sh 
+    ./generate_keys.sh 
 
     # Install bcm
     curl -sSL http://www.airspayce.com/mikem/bcm2835/bcm2835-1.58.tar.gz -o bcm2835-1.58.tar.gz
@@ -34,6 +35,7 @@ Execute commands below at raspberry pi
     make
     sudo make check
     sudo make install
+    cd ..
 
     # Install 
     npm install
