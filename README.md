@@ -5,6 +5,7 @@ It is written by TypeScript.
 
 This app is Poc. You should not use this at production.
 
+![](image.jpeg)
 
 # How to install 
 
